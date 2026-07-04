@@ -1,0 +1,47 @@
+{
+  "name": "@enbandeja/web",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf .next node_modules .turbo"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.4.1",
+    "@enbandeja/database": "workspace:*",
+    "@enbandeja/shared": "workspace:*",
+    "@enbandeja/ui": "workspace:*",
+    "@react-pdf/renderer": "^4.5.1",
+    "@supabase/supabase-js": "^2.106.2",
+    "autoprefixer": "^10.4.0",
+    "date-fns": "^3.0.0",
+    "date-fns-tz": "^3.0.0",
+    "inngest": "^4.5.0",
+    "next": "15.0.0",
+    "next-auth": "^5.0.0-beta.19",
+    "postcss": "^8.4.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "recharts": "^3.8.1",
+    "resend": "^6.11.0",
+    "tailwindcss": "^3.4.0",
+    "transbank-sdk": "^6.1.1",
+    "web-push": "^3.6.7",
+    "xlsx-js-style": "^1.2.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/web-push": "^3.6.4",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "15.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.7"
+  }
+}

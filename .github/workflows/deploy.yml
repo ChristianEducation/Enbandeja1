@@ -1,0 +1,45 @@
+name: Deploy — Vercel
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────
+  # REGLA DE ORO: el deploy solo corre si CI pasó en verde.
+  # Vercel se configura con "Only deploy when CI passes" en el
+  # dashboard, o se usa esta GitHub Action como gate.
+  #
+  # Mandamiento 5 del CLAUDE.md — Config de Vercel:
+  #   Framework Preset:  Other
+  #   Root Directory:    [VACÍO]
+  #   Build Command:     cd apps/web && pnpm build
+  #   Output Directory:  apps/web/.next
+  #   Install Command:   pnpm install
+  # ─────────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy a Vercel
+    runs-on: ubuntu-latest
+    needs: []
+    # Solo deploya si el CI workflow más reciente pasó
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Trigger Vercel deploy
+        run: |
+          echo "El deploy se gestiona directamente desde Vercel."
+          echo "Vercel está vinculado al repo y despliega automáticamente en push a main."
+          echo ""
+          echo "Verificar en Vercel Dashboard:"
+          echo "  Framework Preset:  Other"
+          echo "  Root Directory:    [VACÍO]"
+          echo "  Build Command:     cd apps/web && pnpm build"
+          echo "  Output Directory:  apps/web/.next"
+          echo "  Install Command:   pnpm install"
+          echo ""
+          echo "Si el deploy tarda menos de 1 minuto, es el bug de los 326ms."
+          echo "Detener, Clear Build Cache, revisar config, redesplegar."

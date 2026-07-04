@@ -1,0 +1,5 @@
+foreground/background 15.14 PASS
+secondary/background 5.92 PASS
+tertiary/background 4.66 PASS
+foreground/surface 16.27 PASS
+white/primary 5.11 PASS

@@ -1,0 +1,29 @@
+{
+  "name": "enbandeja",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.15.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "db:generate": "turbo run db:generate",
+    "db:push": "turbo run db:push",
+    "db:migrate": "turbo run db:migrate",
+    "db:seed": "turbo run db:seed",
+    "db:studio": "turbo run db:studio",
+    "postinstall": "cd packages/database && npx prisma generate",
+    "clean": "turbo run clean",
+    "test:e2e:critical": "playwright test --project=critical"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "turbo": "^2.0.0"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "crons": [
+    { "path": "/api/cron/transiciones-menu", "schedule": "0 * * * *" },
+    { "path": "/api/cron/kpi-snapshot", "schedule": "0 * * * *" },
+    { "path": "/api/cron/vencimientos-suscripcion", "schedule": "0 * * * *" }
+  ]
+}

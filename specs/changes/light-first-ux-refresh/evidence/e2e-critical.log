@@ -1,0 +1,75 @@
+
+Running 62 tests using 1 worker
+
+[1A[2K(node:51346) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:51346) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/62] [critical] › tests/e2e/critical/auth-flow.spec.ts:11:7 › Flujo de autenticación › redirige a /login si no está autenticado
+[1A[2K[2/62] [critical] › tests/e2e/critical/auth-flow.spec.ts:16:7 › Flujo de autenticación › la página de login muestra el botón de Google
+[1A[2K[3/62] [critical] › tests/e2e/critical/auth-flow.spec.ts:21:7 › Flujo de autenticación › invalidar sesión en DB desconecta al usuario inmediatamente
+[1A[2K[4/62] [critical] › tests/e2e/critical/cancelacion.spec.ts:20:7 › Cancelación de items y crédito › apoderado cancela item antes de hora de corte → crédito generado
+[1A[2K[5/62] [critical] › tests/e2e/critical/cancelacion.spec.ts:49:7 › Cancelación de items y crédito › cancelación después de hora de corte retorna 403
+[1A[2K[6/62] [critical] › tests/e2e/critical/cancelacion.spec.ts:67:7 › Cancelación de items y crédito › crédito se aplica automáticamente en nuevo pedido
+[1A[2K[7/62] [critical] › tests/e2e/critical/cancelacion.spec.ts:89:7 › Cancelación de items y crédito › CreditoMovimiento es inmutable (INSERT funciona, UPDATE falla)
+[1A[2K[8/62] [critical] › tests/e2e/critical/cancelacion.spec.ts:105:7 › Cancelación de items y crédito › monto de crédito nunca negativo
+[1A[2K[9/62] [critical] › tests/e2e/critical/historial-perfil.spec.ts:19:7 › Historial y Perfil del apoderado › apoderado ve solo sus pedidos en historial
+[1A[2K[10/62] [critical] › tests/e2e/critical/historial-perfil.spec.ts:26:7 › Historial y Perfil del apoderado › filtro por estado funciona
+[1A[2K[11/62] [critical] › tests/e2e/critical/historial-perfil.spec.ts:36:7 › Historial y Perfil del apoderado › agregar comensal desde perfil funciona
+[1A[2K[12/62] [critical] › tests/e2e/critical/historial-perfil.spec.ts:44:7 › Historial y Perfil del apoderado › crédito se muestra correctamente
+[1A[2K[13/62] [critical] › tests/e2e/critical/limites-plan.spec.ts:11:7 › Límites de plan › Starter: máximo 1 colegio
+[1A[2K[14/62] [critical] › tests/e2e/critical/limites-plan.spec.ts:15:7 › Límites de plan › Starter: máximo 3 usuarios
+[1A[2K[15/62] [critical] › tests/e2e/critical/limites-plan.spec.ts:19:7 › Límites de plan › PYME: máximo 3 colegios
+[1A[2K[16/62] [critical] › tests/e2e/critical/limites-plan.spec.ts:23:7 › Límites de plan › Pro: colegios ilimitados
+[1A[2K[17/62] [critical] › tests/e2e/critical/limites-plan.spec.ts:27:7 › Límites de plan › verificarLimitePlan retorna correcto para métrica inexistente
+[1A[2K[18/62] [critical] › tests/e2e/critical/menu-apoderado.spec.ts:20:7 › Menú del apoderado › apoderado ve menú del día con precio correcto por categoría
+[1A[2K[19/62] [critical] › tests/e2e/critical/menu-apoderado.spec.ts:38:7 › Menú del apoderado › calendario expande y muestra mes completo
+[1A[2K[20/62] [critical] › tests/e2e/critical/menu-apoderado.spec.ts:62:7 › Menú del apoderado › selección de día cambia contenido de Zona B
+[1A[2K[21/62] [critical] › tests/e2e/critical/menu-apoderado.spec.ts:80:7 › Menú del apoderado › día sin menú muestra empty state
+[1A[2K[22/62] [critical] › tests/e2e/critical/pedido-flow.spec.ts:19:7 › Flujo de pedido del apoderado › apoderado crea pedido con monto > 0 y redirige a Webpay
+[1A[2K[23/62] [critical] › tests/e2e/critical/pedido-flow.spec.ts:45:7 › Flujo de pedido del apoderado › pedido con totalPagado=0 va directo a PAGADO
+[1A[2K[24/62] [critical] › tests/e2e/critical/pedido-flow.spec.ts:57:7 › Flujo de pedido del apoderado › invariante Pedido.total se valida en Zod, backend y DB
+[1A[2K[25/62] [critical] › tests/e2e/critical/pedido-invariant.spec.ts:13:7 › Invariante contable del pedido › el API rechaza un pedido donde total != creditoAplicado + totalPagado
+[1A[2K[26/62] [critical] › tests/e2e/critical/pedido-invariant.spec.ts:20:7 › Invariante contable del pedido › el CHECK constraint de Postgres rechaza violaciones
+[1A[2K[27/62] [critical] › tests/e2e/critical/registro-flow.spec.ts:12:7 › Flujo de registro y vinculación › login page muestra opciones de autenticación
+[1A[2K[28/62] [critical] › tests/e2e/critical/registro-flow.spec.ts:22:7 › Flujo de registro y vinculación › registro page muestra formulario y link a login
+[1A[2K[29/62] [critical] › tests/e2e/critical/registro-flow.spec.ts:30:7 › Flujo de registro y vinculación › sin sesión en /onboarding redirige a /login
+[1A[2K[30/62] [critical] › tests/e2e/critical/registro-flow.spec.ts:38:7 › Flujo de registro y vinculación › código de casino inválido muestra error
+[1A[2K[31/62] [critical] › tests/e2e/critical/registro-flow.spec.ts:50:7 › Flujo de registro y vinculación › API vincular código retorna 401 sin sesión
+[1A[2K[32/62] [critical] › tests/e2e/critical/registro-flow.spec.ts:59:7 › Flujo de registro y vinculación › API crear comensal retorna 401 sin sesión
+[1A[2K[33/62] [critical] › tests/e2e/critical/registro-flow.spec.ts:74:7 › Flujo de registro y vinculación › login page tiene ADN visual correcto — no morados ni rojos
+[1A[2K[34/62] [critical] › tests/e2e/critical/role-permissions.spec.ts:18:7 › Permisos de rol y publicación de menús › apoderado no puede acceder a /operador/dia
+[1A[2K[35/62] [critical] › tests/e2e/critical/role-permissions.spec.ts:25:7 › Permisos de rol y publicación de menús › cocina no puede escribir — marcar retirado retorna 403
+[1A[2K[36/62] [critical] › tests/e2e/critical/role-permissions.spec.ts:38:7 › Permisos de rol y publicación de menús › operador no puede acceder a /home del apoderado
+[1A[2K[37/62] [critical] › tests/e2e/critical/role-permissions.spec.ts:45:7 › Permisos de rol y publicación de menús › menú con fecha pasada no se puede publicar
+[1A[2K[38/62] [critical] › tests/e2e/critical/role-permissions.spec.ts:63:7 › Permisos de rol y publicación de menús › publicar menú requiere precios para todas las categorías
+[1A[2K[39/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:13:7 › Ciclo de vida de suscripción › ACTIVA → PERIODO_GRACIA al vencer sin pago
+[1A[2K[40/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:22:7 › Ciclo de vida de suscripción › PERIODO_GRACIA → SUSPENDIDA tras 7 días
+[1A[2K[41/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:30:7 › Ciclo de vida de suscripción › SUSPENDIDA → CANCELADA tras 30 días
+[1A[2K[42/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:38:7 › Ciclo de vida de suscripción › CANCELADA → ARCHIVADA tras 90 días
+[1A[2K[43/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:46:7 › Ciclo de vida de suscripción › Cron idempotente: segunda ejecución no salta estados
+[1A[2K[44/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:59:7 › Ciclo de vida de suscripción › Cron sin CRON_SECRET retorna 401
+[1A[2K[45/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:64:7 › Ciclo de vida de suscripción › Owner bloqueado con suscripción SUSPENDIDA (política B)
+[1A[2K[46/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:70:7 › Ciclo de vida de suscripción › Apoderado puede operar con suscripción SUSPENDIDA (política B)
+[1A[2K[47/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:75:7 › Ciclo de vida de suscripción › Pago confirmado saca al tenant de gracia/suspensión
+[1A[2K[48/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:80:7 › Ciclo de vida de suscripción › Cancelación requiere confirmación CANCELAR literal
+[1A[2K[49/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:90:7 › Límites de plan › No se puede crear colegio si se alcanzó el límite
+[1A[2K[50/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:94:7 › Límites de plan › Downgrade rechazado si excede límites del plan menor
+[1A[2K[51/62] [critical] › tests/e2e/critical/suscripcion-ciclo.spec.ts:98:7 › Límites de plan › Upgrade inmediato con prorrateo
+[1A[2K[52/62] [critical] › tests/e2e/critical/tenant-isolation.spec.ts:19:7 › Aislamiento de tenants › un apoderado del Tenant A no ve pedidos del Tenant B
+[1A[2K[53/62] [critical] › tests/e2e/critical/tenant-isolation.spec.ts:29:7 › Aislamiento de tenants › un operador del Tenant A no ve menús del Tenant B
+[1A[2K[54/62] [critical] › tests/e2e/critical/tenant-isolation.spec.ts:34:7 › Aislamiento de tenants › un owner del Tenant A no ve métricas del Tenant B
+[1A[2K[55/62] [critical] › tests/e2e/critical/tenant-isolation.spec.ts:39:7 › Aislamiento de tenants › las policies RLS bloquean queries directas cross-tenant
+[1A[2K[56/62] [critical] › tests/e2e/critical/webhook-idempotency.spec.ts:12:7 › Idempotencia de webhooks › procesar el mismo orderId dos veces no duplica el pago
+[1A[2K[57/62] [critical] › tests/e2e/critical/webhook-idempotency.spec.ts:20:7 › Idempotencia de webhooks › webhook sin firma HMAC válida es rechazado
+[1A[2K[58/62] [critical] › tests/e2e/critical/webpay-return.spec.ts:21:7 › Return/confirmación Webpay › return Webpay sin token_ws redirige a error
+[1A[2K[59/62] [critical] › tests/e2e/critical/webpay-return.spec.ts:31:7 › Return/confirmación Webpay › return con token_ws desconocido redirige a pago-error
+[1A[2K[60/62] [critical] › tests/e2e/critical/webpay-return.spec.ts:45:7 › Return/confirmación Webpay › commit Webpay idempotente: segunda confirmación no duplica stock/crédito
+[1A[2K[61/62] [critical] › tests/e2e/critical/webpay-return.spec.ts:53:7 › Return/confirmación Webpay › commit Webpay con stock insuficiente revierte y genera crédito
+[1A[2K[62/62] [critical] › tests/e2e/critical/webpay-return.spec.ts:60:7 › Return/confirmación Webpay › commit Webpay exitoso actualiza pedido y decrementa stock
+[1A[2K  53 skipped
+  9 passed (20.8s)

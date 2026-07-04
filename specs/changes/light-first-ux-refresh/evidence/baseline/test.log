@@ -1,0 +1,14 @@
+
+> enbandeja@ test /data/.openclaw/workspace/cody/incoming/enbandeja-s7/enbandeja
+> turbo run test
+
+• turbo 2.9.16
+
+   • Packages in scope: @enbandeja/database, @enbandeja/shared, @enbandeja/support-kb, @enbandeja/ui, @enbandeja/web
+   • Running test in 5 packages
+   • Remote caching disabled
+
+  x Unable to find package manager binary: cannot find binary path
+  `-> cannot find binary path
+
+ ELIFECYCLE  Test failed. See above for more details.

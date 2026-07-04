@@ -1,0 +1,287 @@
+[
+  {
+    "slug": "inicio",
+    "route": "/",
+    "role": "APODERADO",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/home",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ]
+  },
+  {
+    "slug": "login",
+    "route": "/login",
+    "role": "PUBLIC",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/login",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": [
+      "ClientFetchError: Failed to fetch. Read more at https://errors.authjs.dev#autherror\n    at fetchData (webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next-auth@5.0.0-beta.31_next@15.0.0_@opentelemetry+api@1.9.1_@playwright+"
+    ]
+  },
+  {
+    "slug": "registro",
+    "route": "/registro",
+    "role": "PUBLIC",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/registro",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "onboarding-codigo",
+    "route": "/onboarding/codigo",
+    "role": "APODERADO",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/onboarding/codigo",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "onboarding-comensal",
+    "route": "/onboarding/comensal",
+    "role": "APODERADO",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/onboarding/comensal",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": [
+      "ClientFetchError: Failed to fetch. Read more at https://errors.authjs.dev#autherror\n    at fetchData (webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next-auth@5.0.0-beta.31_next@15.0.0_@opentelemetry+api@1.9.1_@playwright+"
+    ]
+  },
+  {
+    "slug": "apoderado-home",
+    "route": "/home",
+    "role": "APODERADO",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/home",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "apoderado-resumen",
+    "route": "/resumen",
+    "role": "APODERADO",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/home",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "apoderado-confirmacion",
+    "route": "/confirmacion",
+    "role": "APODERADO",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/home",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "apoderado-historial",
+    "route": "/historial",
+    "role": "APODERADO",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/historial",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "apoderado-perfil",
+    "route": "/perfil",
+    "role": "APODERADO",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/perfil",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "apoderado-credito",
+    "route": "/perfil/credito",
+    "role": "APODERADO",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/perfil/credito",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "operador-dia",
+    "route": "/dia",
+    "role": "OPERADOR",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/dia",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "operador-kiosco",
+    "route": "/kiosco",
+    "role": "OPERADOR",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/kiosco",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "operador-menu",
+    "route": "/menu",
+    "role": "OPERADOR",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/menu",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "operador-menu-nuevo",
+    "route": "/menu/nuevo",
+    "role": "OPERADOR",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/menu/nuevo",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "operador-menu-fecha",
+    "route": "/menu/2026-06-23",
+    "role": "OPERADOR",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/home",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "cocina",
+    "route": "/cocina",
+    "role": "COCINA",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/cocina",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "owner-dashboard",
+    "route": "/dashboard",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/dashboard",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "owner-empresa",
+    "route": "/empresa",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/empresa",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "owner-colegios",
+    "route": "/colegios",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/colegios",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "owner-usuarios",
+    "route": "/usuarios",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/usuarios",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "owner-reportes",
+    "route": "/reportes",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/reportes",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "owner-billing",
+    "route": "/billing",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/billing",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "setup-empresa",
+    "route": "/setup/empresa",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/setup/empresa",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "setup-colegio",
+    "route": "/setup/colegio",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/setup/colegio",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "setup-pasarela",
+    "route": "/setup/pasarela",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/setup/pasarela",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "setup-comensales",
+    "route": "/setup/comensales",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/setup/comensales",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "setup-categorias",
+    "route": "/setup/categorias",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/setup/categorias",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "setup-menu",
+    "route": "/setup/menu",
+    "role": "OWNER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/setup/menu",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "super-admin-tenants",
+    "route": "/super-admin/tenants",
+    "role": "SUPER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/super-admin/tenants",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  },
+  {
+    "slug": "super-admin-billing",
+    "route": "/super-admin/tenants/fe2b7557-6174-4f47-9077-66379e9f2cc4/billing",
+    "role": "SUPER",
+    "status": 200,
+    "finalUrl": "http://127.0.0.1:3000/super-admin/tenants/fe2b7557-6174-4f47-9077-66379e9f2cc4/billing",
+    "title": "Enbandeja — Gestión de casinos escolares",
+    "errors": []
+  }
+]

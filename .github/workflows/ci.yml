@@ -1,0 +1,100 @@
+name: CI — Enbandeja
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "24"
+  PNPM_VERSION: "9.15.0"
+  # Placeholders para que prisma generate y next build no fallen
+  DATABASE_URL: "postgresql://placeholder:placeholder@localhost:5432/enbandeja"
+  DATABASE_DIRECT_URL: "postgresql://placeholder:placeholder@localhost:5432/enbandeja"
+  NEXTAUTH_SECRET: "ci-placeholder-secret-do-not-use-in-production"
+  NEXTAUTH_URL: "http://localhost:3000"
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────
+  # JOB 1: Lint + Type-check global + Build filtrado
+  # ─────────────────────────────────────────────────────────────────
+  audit:
+    name: Lint → Type-check → Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Generar Prisma Client
+        run: pnpm --filter=@enbandeja/database db:generate
+
+      - name: Lint
+        run: pnpm lint
+
+      # Type-check GLOBAL — detecta errores en todos los packages
+      # aunque no se estén buildeando. Protege shared, database, ui.
+      - name: Type-check global (todos los packages)
+        run: pnpm type-check
+
+      # Build FILTRADO — valida la app que va a producción
+      - name: Build apps/web
+        run: pnpm build --filter=@enbandeja/web
+
+  # ─────────────────────────────────────────────────────────────────
+  # JOB 2: Tests E2E críticos (cuando estén implementados)
+  # ─────────────────────────────────────────────────────────────────
+  e2e:
+    name: Tests E2E críticos
+    runs-on: ubuntu-latest
+    needs: [audit]
+    timeout-minutes: 20
+    # Activar cuando los tests E2E dejen de ser skip
+    if: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Instalar Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Generar Prisma Client
+        run: pnpm --filter=@enbandeja/database db:generate
+
+      - name: Ejecutar tests E2E críticos
+        run: npx playwright test --project=critical

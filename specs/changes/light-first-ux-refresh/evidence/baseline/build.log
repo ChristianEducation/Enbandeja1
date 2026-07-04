@@ -1,0 +1,110 @@
+
+> @enbandeja/web@0.0.0 build /data/.openclaw/workspace/cody/incoming/enbandeja-s7/enbandeja/apps/web
+> next build
+
+  ▲ Next.js 15.0.0
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+
+./src/app/(apoderado)/perfil/components/PerfilClient.tsx
+63:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+115:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/49) ...
+   Generating static pages (12/49) 
+   Generating static pages (24/49) 
+   Generating static pages (36/49) 
+ ✓ Generating static pages (49/49)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                  Size     First Load JS
+┌ ƒ /                                        259 B          99.7 kB
+├ ○ /_not-found                              905 B           100 kB
+├ ƒ /api/auth/[...nextauth]                  259 B          99.7 kB
+├ ƒ /api/billing/cambiar-plan                259 B          99.7 kB
+├ ƒ /api/billing/cancelar                    260 B          99.7 kB
+├ ƒ /api/colegios/actualizar                 259 B          99.7 kB
+├ ƒ /api/colegios/crear                      259 B          99.7 kB
+├ ƒ /api/comensales/buscar                   259 B          99.7 kB
+├ ƒ /api/comensales/crear                    259 B          99.7 kB
+├ ƒ /api/cron/kpi-snapshot                   259 B          99.7 kB
+├ ƒ /api/cron/pedidos-expirados              259 B          99.7 kB
+├ ƒ /api/cron/transiciones-menu              260 B          99.7 kB
+├ ƒ /api/cron/vencimientos-suscripcion       259 B          99.7 kB
+├ ƒ /api/exportar/dia                        259 B          99.7 kB
+├ ƒ /api/invitaciones/aceptar                259 B          99.7 kB
+├ ƒ /api/invitaciones/crear                  259 B          99.7 kB
+├ ƒ /api/kiosco/producto                     260 B          99.7 kB
+├ ƒ /api/kiosco/reponer-stock                259 B          99.7 kB
+├ ƒ /api/kpi/generar-si-falta                259 B          99.7 kB
+├ ƒ /api/kpi/snapshots                       259 B          99.7 kB
+├ ƒ /api/menu/actualizar                     259 B          99.7 kB
+├ ƒ /api/menu/cerrar-dia                     259 B          99.7 kB
+├ ƒ /api/menu/copiar-semana                  259 B          99.7 kB
+├ ƒ /api/menu/crear                          259 B          99.7 kB
+├ ƒ /api/notificaciones/count                259 B          99.7 kB
+├ ƒ /api/notificaciones/marcar-leida         259 B          99.7 kB
+├ ƒ /api/payment/webpay/return               259 B          99.7 kB
+├ ƒ /api/pedidos/cancelar-item               259 B          99.7 kB
+├ ƒ /api/pedidos/crear                       259 B          99.7 kB
+├ ƒ /api/pedidos/marcar-retirado             259 B          99.7 kB
+├ ƒ /api/push/registrar-token                259 B          99.7 kB
+├ ƒ /api/reportes/descargar                  259 B          99.7 kB
+├ ƒ /api/reportes/generar                    259 B          99.7 kB
+├ ƒ /api/reportes/listar                     259 B          99.7 kB
+├ ƒ /api/setup/avanzar-paso                  259 B          99.7 kB
+├ ƒ /api/setup/conectar-mercadopago          259 B          99.7 kB
+├ ƒ /api/setup/importar-comensales           259 B          99.7 kB
+├ ƒ /api/super-admin/billing/cambiar-plan    260 B          99.7 kB
+├ ƒ /api/super-admin/billing/cancelar        259 B          99.7 kB
+├ ƒ /api/super-admin/billing/confirmar-pago  259 B          99.7 kB
+├ ƒ /api/super-admin/billing/reactivar       259 B          99.7 kB
+├ ƒ /api/tenant/actualizar                   259 B          99.7 kB
+├ ƒ /api/vincular/codigo                     259 B          99.7 kB
+├ ƒ /billing                                 3.74 kB         107 kB
+├ ƒ /cocina                                  1.91 kB         105 kB
+├ ƒ /colegios                                2.53 kB         106 kB
+├ ƒ /confirmacion                            176 B           109 kB
+├ ƒ /dashboard                               113 kB          216 kB
+├ ƒ /dia                                     4.92 kB         130 kB
+├ ƒ /empresa                                 2.34 kB         106 kB
+├ ƒ /historial                               4.6 kB          130 kB
+├ ƒ /home                                    2.43 kB         144 kB
+├ ƒ /kiosco                                  4.59 kB         130 kB
+├ ƒ /login                                   927 B           113 kB
+├ ƒ /menu                                    3.97 kB         124 kB
+├ ƒ /menu/[fecha]                            2.97 kB         106 kB
+├ ƒ /menu/nuevo                              2.81 kB         106 kB
+├ ○ /onboarding/codigo                       3.64 kB         125 kB
+├ ƒ /onboarding/comensal                     2.74 kB         145 kB
+├ ƒ /perfil                                  1.62 kB         147 kB
+├ ƒ /perfil/credito                          3.61 kB         129 kB
+├ ƒ /registro                                927 B           113 kB
+├ ƒ /reportes                                2.74 kB         106 kB
+├ ƒ /resumen                                 4.13 kB         130 kB
+├ ƒ /setup/categorias                        1.74 kB         105 kB
+├ ƒ /setup/colegio                           2.1 kB          105 kB
+├ ƒ /setup/comensales                        2.48 kB         106 kB
+├ ƒ /setup/empresa                           2.06 kB         105 kB
+├ ƒ /setup/menu                              1.91 kB         105 kB
+├ ƒ /setup/pasarela                          2.2 kB          105 kB
+├ ƒ /super-admin/tenants                     1.82 kB         114 kB
+├ ƒ /super-admin/tenants/[id]/billing        4.47 kB         117 kB
+└ ƒ /usuarios                                2.52 kB         106 kB
++ First Load JS shared by all                99.4 kB
+  ├ chunks/3985-9550890a07936f33.js          44.9 kB
+  ├ chunks/8fff9bbc-9965a1c16dcff161.js      52.6 kB
+  └ other shared chunks (total)              1.92 kB
+
+
+ƒ Middleware                                 30.4 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

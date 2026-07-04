@@ -1,0 +1,915 @@
+// ═══════════════════════════════════════════════════════════════════
+// ENBANDEJA — Schema Prisma Completo
+// ═══════════════════════════════════════════════════════════════════
+// Versión: 1.0 (Parte C del Plan Maestro)
+// Fecha: Abril 2026
+// Reglas fundacionales:
+//   - Todos los IDs: @default(uuid()) @db.Uuid
+//   - Relaciones en PascalCase
+//   - tenantId en toda tabla de negocio
+//   - Soft delete en tablas editables, inmutable en logs
+// ═══════════════════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_DIRECT_URL")
+}
+
+// ───────────────────────────────────────────────────────────────────
+// ENUMS
+// ───────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  OWNER
+  OPERADOR
+  COCINA
+  APODERADO
+}
+
+enum VinculoComensal {
+  PADRE
+  MADRE
+  ADULTO_RESPONSABLE
+  ESTUDIANTE
+}
+
+enum TenantStatus {
+  ACTIVE
+  TRIAL
+  SUSPENDED
+  CANCELLED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+}
+
+enum EstadoMenu {
+  BORRADOR
+  PUBLICADO
+  CERRADO
+  ARCHIVADO
+}
+
+enum EstadoOpcionMenu {
+  ACTIVA
+  AGOTADA
+  INACTIVA
+}
+
+enum EstadoPedido {
+  PENDIENTE_PAGO
+  PAGADO
+  CANCELADO
+  EXPIRADO
+  RETIRADO
+  NO_RETIRADO
+}
+
+enum TipoPedidoItem {
+  ALMUERZO
+  KIOSCO
+}
+
+enum MetodoPago {
+  WEBPAY
+  WEBPAY_ONECLICK
+  MERCADOPAGO
+  MERCADOPAGO_SUSCRIPCION
+  MANUAL
+}
+
+enum TipoSuscripcion {
+  MENSUAL
+  ANUAL
+}
+
+enum EstadoSuscripcion {
+  ACTIVA
+  PERIODO_GRACIA
+  SUSPENDIDA
+  CANCELADA
+  ARCHIVADA
+}
+
+enum TipoPlan {
+  STARTER
+  PYME
+  PRO
+  ENTERPRISE
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: AUTH + TENANCY (NextAuth v5 + multi-tenant)
+// ───────────────────────────────────────────────────────────────────
+
+// User es GLOBAL a la plataforma — no tiene tenantId (Ajuste #1).
+// La pertenencia a tenants vive en UserTenant.
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  passwordHash  String?   // nullable — usuarios Google no tienen password
+  isActive      Boolean   @default(true)
+  deletedAt     DateTime?
+  version       Int       @default(1)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  Accounts             Account[]
+  Sessions             Session[]
+  UserTenants          UserTenant[]
+  Comensales           Comensal[]
+  Invitations          Invitation[]        @relation("InvitedBy")
+  NotificacionesLogs   NotificacionLog[]
+  NotificacionesLeidas NotificacionLeida[]
+  PushTokens           PushToken[]
+  AuditLogs            AuditLog[]
+  Creditos             CreditoApoderado[]
+  ReportesSolicitados ReporteExportacion[] @relation("ReporteSolicitadoBy")
+  Pedidos              Pedido[]
+}
+
+model Account {
+  id                String  @id @default(uuid()) @db.Uuid
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+// Session extendido con activeTenantId (Ajuste #3).
+model Session {
+  id             String   @id @default(uuid()) @db.Uuid
+  sessionToken   String   @unique
+  userId         String   @db.Uuid
+  expires        DateTime
+  activeTenantId String?  @db.Uuid
+
+  User         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ActiveTenant Tenant? @relation("SessionActiveTenant", fields: [activeTenantId], references: [id])
+
+  @@index([userId])
+  @@index([activeTenantId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Tenant {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String       @unique
+  rut         String?
+  email       String
+  phone       String?
+  logoUrl     String?
+  timezone    String       @default("America/Santiago")
+  status      TenantStatus @default(TRIAL)
+  trialEndsAt DateTime?
+  deletedAt   DateTime?
+  version     Int          @default(1)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  Colegios           Colegio[]
+  UserTenants        UserTenant[]
+  Invitations        Invitation[]
+  ActiveSessions     Session[]           @relation("SessionActiveTenant")
+  Comensales         Comensal[]
+  CategoriasPrecio   CategoriaPrecio[]
+  Menus              Menu[]
+  OpcionesMenu       OpcionMenu[]
+  PreciosOpcion      PrecioOpcion[]
+  CategoriasKiosco   CategoriaKiosco[]
+  ProductosKiosco    ProductoKiosco[]
+  Pedidos            Pedido[]
+  PedidoItems        PedidoItem[]
+  CreditosApoderado  CreditoApoderado[]
+  CreditoMovimientos CreditoMovimiento[]
+  KpiSnapshots       KpiSnapshot[]
+  Suscripcion        Suscripcion?
+  PagosSuscripcion   PagoSuscripcion[]
+  OnboardingProgress OnboardingProgress?
+  NotificacionesLogs NotificacionLog[]
+  AuditLogs          AuditLog[]
+  PaymentProviderConfigs   PaymentProviderConfig[]
+  ReportesExportacion          ReporteExportacion[]
+
+  @@index([slug])
+  @@index([status])
+}
+
+model UserTenant {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  tenantId  String    @db.Uuid
+  role      UserRole
+  colegioId String?   @db.Uuid
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
+  version   Int       @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  User    User     @relation(fields: [userId], references: [id])
+  Tenant  Tenant   @relation(fields: [tenantId], references: [id])
+  Colegio Colegio? @relation(fields: [colegioId], references: [id])
+
+  @@unique([userId, tenantId, colegioId])
+  @@index([tenantId])
+  @@index([userId])
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: SUPER ADMIN (separado del sistema de tenants)
+// ───────────────────────────────────────────────────────────────────
+
+model SuperAdmin {
+  id               String    @id @default(uuid()) @db.Uuid
+  email            String    @unique
+  name             String
+  passwordHash     String
+  totpSecret       String
+  twoFactorEnabled Boolean   @default(true)
+  isActive         Boolean   @default(true)
+  lastLoginAt      DateTime?
+  deletedAt        DateTime?
+  version          Int       @default(1)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: INVITACIONES
+// ───────────────────────────────────────────────────────────────────
+
+model Invitation {
+  id          String           @id @default(uuid()) @db.Uuid
+  tenantId    String           @db.Uuid
+  email       String
+  role        UserRole
+  colegioId   String?          @db.Uuid
+  token       String           @unique
+  status      InvitationStatus @default(PENDING)
+  invitedById String           @db.Uuid
+  expiresAt   DateTime
+  acceptedAt  DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  Tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  InvitedBy User     @relation("InvitedBy", fields: [invitedById], references: [id])
+  Colegio   Colegio? @relation(fields: [colegioId], references: [id])
+
+  @@index([tenantId])
+  @@index([token])
+  @@index([email])
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: COLEGIOS Y COMENSALES
+// ───────────────────────────────────────────────────────────────────
+
+model Colegio {
+  id               String    @id @default(uuid()) @db.Uuid
+  tenantId         String    @db.Uuid
+  nombre           String
+  codigoCasino     String    @unique
+  direccion        String?
+  logoUrl          String?
+  horaCorte        String    @default("09:00")
+  horaRetiroActivo Boolean   @default(false)
+  horasRetiro      String[]  @default([])
+  kioscoActivo     Boolean   @default(false)
+  isActive         Boolean   @default(true)
+  deletedAt        DateTime?
+  version          Int       @default(1)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  Tenant           Tenant             @relation(fields: [tenantId], references: [id])
+  Comensales       Comensal[]
+  Menus            Menu[]
+  Pedidos          Pedido[]
+  UserTenants      UserTenant[]
+  ProductosKiosco  ProductoKiosco[]
+  CategoriasPrecio CategoriaPrecio[]
+  CategoriasKiosco CategoriaKiosco[]
+  KpiSnapshots     KpiSnapshot[]
+  Invitations      Invitation[]
+  Creditos         CreditoApoderado[]
+  ReportesExportacion ReporteExportacion[]
+
+  @@index([tenantId])
+  @@index([codigoCasino])
+}
+
+model Comensal {
+  id                        String          @id @default(uuid()) @db.Uuid
+  tenantId                  String          @db.Uuid
+  colegioId                 String          @db.Uuid
+  apoderadoId               String?         @db.Uuid
+  categoriaPrecioId         String?         @db.Uuid
+  nombre                    String
+  apellido                  String
+  rut                       String?
+  curso                     String
+  nivel                     String?
+  vinculo                   VinculoComensal?
+  avatarUrl                 String?
+  qrCode                    String?
+  puedeHacerPedidoSolo      Boolean         @default(false)
+  restriccionesAlimentarias String?
+  isActive                  Boolean         @default(true)
+  deletedAt                 DateTime?
+  version                   Int             @default(1)
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @updatedAt
+
+  Tenant          Tenant           @relation(fields: [tenantId], references: [id])
+  Colegio         Colegio          @relation(fields: [colegioId], references: [id])
+  Apoderado       User?            @relation(fields: [apoderadoId], references: [id])
+  CategoriaPrecio CategoriaPrecio? @relation(fields: [categoriaPrecioId], references: [id])
+  PedidoItems     PedidoItem[]
+
+  @@index([tenantId])
+  @@index([colegioId])
+  @@index([apoderadoId])
+}
+
+model CategoriaPrecio {
+  id          String    @id @default(uuid()) @db.Uuid
+  tenantId    String    @db.Uuid
+  colegioId   String    @db.Uuid
+  nombre      String
+  descripcion String?
+  esDefault   Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  orden       Int       @default(0)
+  deletedAt   DateTime?
+  version     Int       @default(1)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  Tenant     Tenant         @relation(fields: [tenantId], references: [id])
+  Colegio    Colegio        @relation(fields: [colegioId], references: [id])
+  Comensales Comensal[]
+  Precios    PrecioOpcion[]
+
+  @@index([tenantId])
+  @@index([colegioId])
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: MENÚS Y CATÁLOGO
+// ───────────────────────────────────────────────────────────────────
+
+model Menu {
+  id        String     @id @default(uuid()) @db.Uuid
+  tenantId  String     @db.Uuid
+  colegioId String     @db.Uuid
+  fecha     DateTime   @db.Date
+  estado    EstadoMenu @default(BORRADOR)
+  deletedAt DateTime?
+  version   Int        @default(1)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  Tenant   Tenant       @relation(fields: [tenantId], references: [id])
+  Colegio  Colegio      @relation(fields: [colegioId], references: [id])
+  Opciones OpcionMenu[]
+
+  @@unique([colegioId, fecha])
+  @@index([tenantId])
+  @@index([colegioId])
+  @@index([fecha])
+}
+
+model OpcionMenu {
+  id          String           @id @default(uuid()) @db.Uuid
+  tenantId    String           @db.Uuid
+  menuId      String           @db.Uuid
+  nombre      String
+  descripcion String?
+  fotoUrl     String?
+  categoria   String?
+  stockMax    Int?
+  stockActual Int?
+  estado      EstadoOpcionMenu @default(ACTIVA)
+  orden       Int              @default(0)
+  deletedAt   DateTime?
+  version     Int              @default(1)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  Tenant      Tenant         @relation(fields: [tenantId], references: [id])
+  Menu        Menu           @relation(fields: [menuId], references: [id])
+  Precios     PrecioOpcion[]
+  PedidoItems PedidoItem[]
+
+  @@index([tenantId])
+  @@index([menuId])
+}
+
+model PrecioOpcion {
+  id                String    @id @default(uuid()) @db.Uuid
+  tenantId          String    @db.Uuid
+  opcionMenuId      String    @db.Uuid
+  categoriaPrecioId String    @db.Uuid
+  precio            Int
+  deletedAt         DateTime?
+  version           Int       @default(1)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  Tenant          Tenant          @relation(fields: [tenantId], references: [id])
+  OpcionMenu      OpcionMenu      @relation(fields: [opcionMenuId], references: [id])
+  CategoriaPrecio CategoriaPrecio @relation(fields: [categoriaPrecioId], references: [id])
+
+  @@unique([opcionMenuId, categoriaPrecioId])
+  @@index([tenantId])
+  @@index([opcionMenuId])
+  @@index([categoriaPrecioId])
+}
+
+model CategoriaKiosco {
+  id        String    @id @default(uuid()) @db.Uuid
+  tenantId  String    @db.Uuid
+  colegioId String    @db.Uuid
+  nombre    String
+  orden     Int       @default(0)
+  isActive  Boolean   @default(true)
+  deletedAt DateTime?
+  version   Int       @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  Tenant    Tenant           @relation(fields: [tenantId], references: [id])
+  Colegio   Colegio          @relation(fields: [colegioId], references: [id])
+  Productos ProductoKiosco[]
+
+  @@index([tenantId])
+  @@index([colegioId])
+}
+
+model ProductoKiosco {
+  id                String    @id @default(uuid()) @db.Uuid
+  tenantId          String    @db.Uuid
+  colegioId         String    @db.Uuid
+  categoriaKioscoId String?   @db.Uuid
+  nombre            String
+  descripcion       String?
+  fotoUrl           String?
+  precio            Int
+  stockDiario       Int?
+  stockActual       Int?
+  autoReposicion    Boolean   @default(false)
+  isActive          Boolean   @default(true)
+  orden             Int       @default(0)
+  deletedAt         DateTime?
+  version           Int       @default(1)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  Tenant          Tenant           @relation(fields: [tenantId], references: [id])
+  Colegio         Colegio          @relation(fields: [colegioId], references: [id])
+  CategoriaKiosco CategoriaKiosco? @relation(fields: [categoriaKioscoId], references: [id])
+  PedidoItems     PedidoItem[]
+
+  @@index([tenantId])
+  @@index([colegioId])
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DOMINIO: CONFIGURACIÓN DE PASARELAS DE PAGO POR TENANT
+// ═══════════════════════════════════════════════════════════════════
+// Cada tenant configura sus propias credenciales de pasarela.
+// NO se usan env vars globales para credenciales de pago.
+// Los campos sensibles (apiKey, secretKey) se cifran con AES-256-GCM
+// antes de almacenarse. La clave de cifrado vive en la env var
+// PAYMENT_ENCRYPTION_KEY (única env var global necesaria).
+// RLS aísla por tenantId.
+// ═══════════════════════════════════════════════════════════════════
+
+enum PaymentProvider {
+  WEBPAY
+  MERCADOPAGO
+}
+
+model PaymentProviderConfig {
+  id               String          @id @default(uuid()) @db.Uuid
+  tenantId         String          @db.Uuid
+  provider         PaymentProvider
+  commerceCode     String          // Código de comercio (Webpay) o collector_id (MP)
+  apiKeyEncrypted  String          // API key cifrada con AES-256-GCM
+  secretKeyEncrypted String        // Secret/key cifrada con AES-256-GCM
+  environment      String          @default("integration") // integration | production
+  isActive         Boolean         @default(true)
+  isDefault        Boolean         @default(false) // Solo una config activa por provider
+  deletedAt        DateTime?
+  version          Int             @default(1)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  Tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, provider, isActive])
+  @@index([tenantId])
+  @@index([provider])
+  @@map("payment_provider_config")
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: PEDIDOS Y PAGOS
+// ───────────────────────────────────────────────────────────────────
+
+model Pedido {
+  id               String       @id @default(uuid()) @db.Uuid
+  tenantId         String       @db.Uuid
+  colegioId        String       @db.Uuid
+  apoderadoId      String       @db.Uuid
+  orderId          String       @unique
+ webpayToken String? @unique
+  total            Int
+  creditoAplicado  Int          @default(0)
+  totalPagado      Int
+  estado           EstadoPedido @default(PENDIENTE_PAGO)
+  transactionId    String?
+  metodoPago       MetodoPago?
+  rating           Int?
+  ratingComentario String?
+  deletedAt        DateTime?
+  version          Int          @default(1)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  Tenant    Tenant       @relation(fields: [tenantId], references: [id])
+  Colegio   Colegio      @relation(fields: [colegioId], references: [id])
+  Apoderado User         @relation(fields: [apoderadoId], references: [id])
+  Items     PedidoItem[]
+
+  @@index([tenantId])
+  @@index([colegioId])
+  @@index([apoderadoId])
+  @@index([estado])
+  @@index([createdAt])
+}
+
+// Tabla con snapshot inmutable de nombre, precio y subtotal al momento
+// del pago. No se modifican retroactivamente.
+model PedidoItem {
+  id               String         @id @default(uuid()) @db.Uuid
+  tenantId         String         @db.Uuid
+  pedidoId         String         @db.Uuid
+  comensalId       String         @db.Uuid
+  opcionMenuId     String?        @db.Uuid
+  productoKioscoId String?        @db.Uuid
+  fecha            DateTime       @db.Date
+  tipo             TipoPedidoItem
+  nombre           String
+  precio           Int
+  cantidad         Int            @default(1)
+  subtotal         Int
+  horaRetiro       String?
+  retirado         Boolean        @default(false)
+  retiradoAt       DateTime?
+  cancelado        Boolean        @default(false)
+  canceladoAt      DateTime?
+  creditoGenerado  Int            @default(0)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  Tenant         Tenant          @relation(fields: [tenantId], references: [id])
+  Pedido         Pedido          @relation(fields: [pedidoId], references: [id])
+  Comensal       Comensal        @relation(fields: [comensalId], references: [id])
+  OpcionMenu     OpcionMenu?     @relation(fields: [opcionMenuId], references: [id])
+  ProductoKiosco ProductoKiosco? @relation(fields: [productoKioscoId], references: [id])
+
+  @@index([tenantId])
+  @@index([pedidoId])
+  @@index([comensalId])
+  @@index([fecha])
+}
+
+model CreditoApoderado {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String   @db.Uuid
+  apoderadoId String   @db.Uuid
+  colegioId   String   @db.Uuid
+  monto       Int
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  Tenant      Tenant              @relation(fields: [tenantId], references: [id])
+  Apoderado   User                @relation(fields: [apoderadoId], references: [id])
+  Colegio     Colegio             @relation(fields: [colegioId], references: [id])
+  Movimientos CreditoMovimiento[]
+
+  @@unique([apoderadoId, colegioId])
+  @@index([tenantId])
+}
+
+// Tabla inmutable: sin updatedAt, sin deletedAt, sin version.
+model CreditoMovimiento {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @db.Uuid
+  creditoId String   @db.Uuid
+  monto     Int
+  concepto  String
+  pedidoId  String?  @db.Uuid
+  createdAt DateTime @default(now())
+
+  Tenant  Tenant           @relation(fields: [tenantId], references: [id])
+  Credito CreditoApoderado @relation(fields: [creditoId], references: [id])
+
+  @@index([tenantId])
+  @@index([creditoId])
+}
+
+// Tabla inmutable: sin updatedAt, sin deletedAt, sin version.
+model WebhookEventLog {
+  id          String    @id @default(uuid()) @db.Uuid
+  tenantId    String?   @db.Uuid
+  provider    String
+  eventType   String
+  orderId     String    @unique
+  payload     Json
+  processed   Boolean   @default(false)
+  processedAt DateTime?
+  error       String?
+  createdAt   DateTime  @default(now())
+
+  @@index([orderId])
+  @@index([processed])
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: NOTIFICACIONES Y PUSH
+// ───────────────────────────────────────────────────────────────────
+
+model PushToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  token     String   @unique
+  platform  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+// Tabla inmutable: sin updatedAt, sin deletedAt, sin version.
+// Ajuste #12: separada de NotificacionLeida.
+model NotificacionLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @db.Uuid
+  userId    String   @db.Uuid
+  tipo      String
+  titulo    String
+  mensaje   String
+  canal     String
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  Tenant   Tenant              @relation(fields: [tenantId], references: [id])
+  User     User                @relation(fields: [userId], references: [id])
+  Lecturas NotificacionLeida[]
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// Tabla mutable (separada para permitir marcar como leída sin mutar el log).
+model NotificacionLeida {
+  id             String   @id @default(uuid()) @db.Uuid
+  notificacionId String   @db.Uuid
+  userId         String   @db.Uuid
+  leidaAt        DateTime @default(now())
+
+  Notificacion NotificacionLog @relation(fields: [notificacionId], references: [id])
+  User         User            @relation(fields: [userId], references: [id])
+
+  @@unique([notificacionId, userId])
+  @@index([userId])
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: REPORTES (KpiSnapshot inmutable)
+// ───────────────────────────────────────────────────────────────────
+
+// Tabla inmutable: sin updatedAt, sin deletedAt, sin version.
+model KpiSnapshot {
+  id                   String   @id @default(uuid()) @db.Uuid
+  tenantId             String   @db.Uuid
+  colegioId            String   @db.Uuid
+  fecha                DateTime @db.Date
+  totalPedidos         Int      @default(0)
+  totalPagados         Int      @default(0)
+  totalCancelados      Int      @default(0)
+  totalExpirados       Int      @default(0)
+  totalRetirados       Int      @default(0)
+  totalNoRetirados     Int      @default(0)
+  totalIngresos        Int      @default(0)
+  totalCreditos        Int      @default(0)
+  distribucionOpciones Json     @default("{}")
+  distribucionKiosco   Json     @default("{}")
+  ticketPromedio       Int      @default(0)
+  createdAt            DateTime @default(now())
+
+  Tenant  Tenant  @relation(fields: [tenantId], references: [id])
+  Colegio Colegio @relation(fields: [colegioId], references: [id])
+
+  @@unique([colegioId, fecha])
+  @@index([tenantId])
+  @@index([fecha])
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: BILLING SAAS
+// ───────────────────────────────────────────────────────────────────
+
+model Plan {
+  id            String    @id @default(uuid()) @db.Uuid
+  tipo          TipoPlan  @unique
+  nombre        String
+  descripcion   String?
+  precioMensual Int?
+  precioAnual   Int?
+  maxColegios   Int?
+  maxUsuarios   Int?
+  isActive      Boolean   @default(true)
+  deletedAt     DateTime?
+  version       Int       @default(1)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  Suscripciones Suscripcion[]
+  Limites       PlanLimite[]
+}
+
+model PlanLimite {
+  id        String   @id @default(uuid()) @db.Uuid
+  planId    String   @db.Uuid
+  metrica   String
+  valor     Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Plan Plan @relation(fields: [planId], references: [id])
+
+  @@unique([planId, metrica])
+  @@index([planId])
+}
+
+model Suscripcion {
+  id            String            @id @default(uuid()) @db.Uuid
+  tenantId      String            @unique @db.Uuid
+  planId        String            @db.Uuid
+  tipo          TipoSuscripcion   @default(MENSUAL)
+  estado        EstadoSuscripcion @default(ACTIVA)
+  periodoInicio DateTime
+  periodoFin    DateTime
+  vencidoAt     DateTime?
+  suspendidoAt  DateTime?
+  canceladoAt   DateTime?
+  archivadoAt   DateTime?
+  metodoPago    MetodoPago?
+  tokenPago     String?
+  pendingPlanId  String?  @db.Uuid
+  pendingPlanTipo String?
+  version       Int               @default(1)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  Tenant Tenant            @relation(fields: [tenantId], references: [id])
+  Plan   Plan              @relation(fields: [planId], references: [id])
+  Pagos  PagoSuscripcion[]
+
+  @@index([estado])
+  @@index([periodoFin])
+}
+
+// Tabla inmutable: sin updatedAt, sin deletedAt, sin version.
+model PagoSuscripcion {
+  id            String          @id @default(uuid()) @db.Uuid
+  suscripcionId String          @db.Uuid
+  tenantId      String          @db.Uuid
+  monto         Int
+  tipo          TipoSuscripcion
+  estado        String
+  metodoPago    MetodoPago
+  transactionId String?
+  periodoInicio DateTime
+  periodoFin    DateTime
+  createdAt     DateTime        @default(now())
+
+  Suscripcion Suscripcion @relation(fields: [suscripcionId], references: [id])
+  Tenant      Tenant      @relation(fields: [tenantId], references: [id])
+
+  @@index([suscripcionId])
+  @@index([tenantId])
+  @@index([createdAt])
+}
+
+model OnboardingProgress {
+  id                  String    @id @default(uuid()) @db.Uuid
+  tenantId            String    @unique @db.Uuid
+  datosEmpresa        Boolean   @default(false)
+  primerColegio       Boolean   @default(false)
+  conectoMercadoPago  Boolean   @default(false)
+  comensalesCargados  Boolean   @default(false)
+  categoriasPrecios   Boolean   @default(false)
+  primerMenuPublicado Boolean   @default(false)
+  kitDescargado       Boolean   @default(false)
+  completadoAt        DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  Tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: SISTEMA (AuditLog)
+// ───────────────────────────────────────────────────────────────────
+
+// Tabla inmutable: sin updatedAt, sin deletedAt, sin version.
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String?  @db.Uuid
+  userId     String?  @db.Uuid
+  action     String
+  entityType String
+  entityId   String   @db.Uuid
+  changes    Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  Tenant Tenant? @relation(fields: [tenantId], references: [id])
+  User   User?   @relation(fields: [userId], references: [id])
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// ───────────────────────────────────────────────────────────────────
+// DOMINIO: REPORTES / EXPORTACIONES
+// ───────────────────────────────────────────────────────────────────
+
+model ReporteExportacion {
+  id             String   @id @default(uuid()) @db.Uuid
+  tenantId       String   @db.Uuid
+  colegioId      String?  @db.Uuid
+  tipo           String   @default("EXCEL_MENSUAL")
+  periodo        String   // "2026-06" formato YYYY-MM
+  estado         String   @default("PENDIENTE") // PENDIENTE, GENERANDO, LISTO, ERROR
+  storagePath    String?
+  fileName       String?
+  fileSizeBytes  Int?
+  generadoAt     DateTime?
+  expiraAt       DateTime?
+  solicitadoById String   @db.Uuid
+  createdAt      DateTime @default(now())
+
+  Tenant          Tenant   @relation(fields: [tenantId], references: [id])
+  Colegio         Colegio? @relation(fields: [colegioId], references: [id])
+  SolicitadoBy    User     @relation("ReporteSolicitadoBy", fields: [solicitadoById], references: [id])
+
+  @@index([tenantId])
+  @@index([estado])
+  @@index([periodo])
+}

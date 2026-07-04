@@ -1,0 +1,4 @@
+
+> @enbandeja/web@0.0.0 type-check /data/.openclaw/workspace/cody/incoming/enbandeja-s7/enbandeja/apps/web
+> tsc --noEmit
+

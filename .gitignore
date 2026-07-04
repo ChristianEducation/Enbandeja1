@@ -1,0 +1,45 @@
+# Dependencias
+node_modules/
+
+# Build
+.next/
+dist/
+.turbo/
+*.tsbuildinfo
+
+# Prisma
+packages/database/prisma/migrations/**/migration_lock.toml
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.claude/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+blob-report/
+
+# Vercel
+.vercel/
+
+# Debug
+npm-debug.log*
+pnpm-debug.log*
+package-lock.json
+
+# Sentry
+.sentryclirc
