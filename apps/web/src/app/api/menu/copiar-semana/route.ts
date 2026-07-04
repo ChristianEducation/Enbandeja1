@@ -13,9 +13,9 @@ import { addDays } from "date-fns"
 
 export const POST = withAuth(async (req: NextRequest, context: SessionContext) => {
   try {
-    if (context.role !== "OPERADOR") {
+    if (context.role !== "OPERADOR" && context.role !== "OWNER") {
       return NextResponse.json(
-        { success: false, error: "Solo el operador puede copiar menús" },
+        { success: false, error: "Solo operador u owner pueden copiar menús" },
         { status: 403 }
       )
     }

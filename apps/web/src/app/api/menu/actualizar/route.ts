@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // POST /api/menu/actualizar — Actualizar menú existente
 // ═══════════════════════════════════════════════════════════════════
-// Solo OPERADOR. Solo si estado === BORRADOR.
+// OPERADOR u OWNER. Solo si estado === BORRADOR.
 // Transacción atómica: elimina opciones viejas, crea nuevas + precios
 // ═══════════════════════════════════════════════════════════════════
 import { NextRequest, NextResponse } from "next/server"
@@ -32,9 +32,9 @@ const ActualizarMenuSchema = z.object({
 
 export const POST = withAuth(async (req: NextRequest, context: SessionContext) => {
   try {
-    if (context.role !== "OPERADOR") {
+    if (context.role !== "OPERADOR" && context.role !== "OWNER") {
       return NextResponse.json(
-        { success: false, error: "Solo el operador puede actualizar menús" },
+        { success: false, error: "Solo operador u owner pueden actualizar menús" },
         { status: 403 }
       )
     }
