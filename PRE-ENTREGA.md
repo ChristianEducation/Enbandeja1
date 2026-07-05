@@ -1,62 +1,77 @@
-# REPORTE PRE-ENTREGA - Preparacion Repo Enbandeja1
+# REPORTE PRE-ENTREGA - Gate C Experiencia Comercial
 
 ## Estado
 
-Proyecto actualizado preparado localmente para subir al repo vacio
-`https://github.com/ChristianEducation/Enbandeja1`.
+Gate C implementado en la rama `fix/pre-demo-sprint`.
 
-No se hizo commit ni push todavia.
+No se incluyo el cambio local pendiente en `apps/web/src/app/(auth)/login/page.tsx`,
+porque viene de la prueba movil previa y no pertenece a este gate.
 
 ## 1. Codigo corre
 
-- [x] `corepack pnpm install --frozen-lockfile`: pasa.
-- [x] Prisma Client generado durante `postinstall`.
-- [x] `pnpm lint`: pasa con 2 warnings de `<img>` en `PerfilClient.tsx`.
-- [x] `pnpm type-check`: pasa.
-- [x] `pnpm build`: pasa, Next.js compila 49 rutas.
-- [x] `pnpm test`: pasa, aunque actualmente solo ejecuta builds cacheados segun la configuracion del monorepo.
+- [x] `PATH="$PWD/.local-bin:$PATH" pnpm type-check`: pasa.
+- [x] `PATH="$PWD/.local-bin:$PATH" pnpm lint`: pasa con 2 warnings
+      preexistentes por `<img>` en `PerfilClient.tsx`.
+- [x] `PATH="$PWD/.local-bin:$PATH" pnpm build --filter=@enbandeja/web`:
+      pasa; Next compila 49 rutas.
 
 ## 2. Flujo principal
 
-- [x] La app web compila en modo produccion.
-- [x] Next.js genera paginas y rutas API sin errores de build.
-- [ ] No se ejecuto flujo funcional con navegador en esta pasada.
+- [x] `/pago-error` compila y queda disponible como ruta publica.
+- [x] `/pago-rechazado` compila y queda disponible como ruta publica.
+- [x] El path `stock_insufficient` de Webpay registra `AuditLog` para
+      devolucion manual requerida.
+- [x] El mismo path crea notificacion best-effort al apoderado con ruta
+      `/historial`.
+- [ ] Simulacion manual de Webpay con stock insuficiente: pendiente manual.
 
 ## 3. Estados de UI
 
-- [x] La compilacion incluye rutas principales de apoderado, cocina, operador, owner, setup y super-admin.
-- [ ] No se hizo auditoria visual nueva en esta pasada.
+- [x] Se agregaron skeletons dedicados para:
+      `/home`, `/historial`, `/dia`, `/menu`, `/dashboard`.
+- [x] Los skeletons usan silueta de cards/grids, no spinners genericos.
+- [x] Las paginas de error de pago usan estado ambar/warning, sin rojo.
+- [ ] Validacion visual con throttling Slow 3G en navegador real:
+      pendiente manual.
 
 ## 4. No rompiste nada
 
-- [x] Se copio desde la version mas actualizada encontrada:
-      `/data/.openclaw/workspace/cody/incoming/enbandeja-s7/enbandeja`.
-- [x] Se excluyeron `node_modules`, `.next`, `.turbo`, `test-results`, `playwright-report`, `coverage`.
-- [x] Se excluyeron `.env`, `.env.local` y `.env.*.local`.
-- [x] Solo queda `.env.example` como plantilla versionable.
-- [x] No se tocaron secretos.
+- [x] No se tocaron flujos exitosos de pago.
+- [x] No se introdujeron secretos.
+- [x] No se agregaron dependencias nuevas.
+- [x] No se incluyeron carpetas locales `.local-bin/` ni `.local-tools/`.
+- [x] El cambio local de login queda fuera del commit de Gate C.
 
 ## 5. Otro humano lo entiende
 
-- [x] El repo destino conserva README, docs, specs, apps, packages, tests y lockfile.
-- [x] El proyecto queda listo para commit inicial revisable.
+- [x] Las paginas nuevas son Server Components simples.
+- [x] Los textos de `motivo` quedan localizados en la pagina publica.
+- [x] El manifest e iconos viven en `apps/web/public`.
+- [x] La traza de devolucion usa `AuditLog` con campos reales del schema.
 
 ## 6. Evidencia concreta
 
-- Repo destino local: `/data/.openclaw/workspace/cody/Enbandeja1`
-- Archivos versionables preparados: 431.
-- Verificacion de seguridad: sin `.env`, `.env.local`, `.next`, `node_modules`, `.turbo`, `test-results` ni `playwright-report` dentro del set preparado para Git.
-- Build: `pnpm build` completo con 4/4 tareas exitosas.
-- Typecheck: `pnpm type-check` completo con 7/7 tareas exitosas.
-- Lint: `pnpm lint` completo con 7/7 tareas exitosas.
-- Test: `pnpm test` completo con 3/3 tareas exitosas.
+- Rutas nuevas compiladas por Next:
+  - `/pago-error`
+  - `/pago-rechazado`
+- Assets PWA creados:
+  - `apps/web/public/favicon.ico`
+  - `apps/web/public/icon-192.png`
+  - `apps/web/public/icon-512.png`
+  - `apps/web/public/apple-touch-icon.png`
+  - `apps/web/public/manifest.json`
+- Verificacion:
+  - `pnpm type-check`: OK.
+  - `pnpm lint`: OK con warnings preexistentes.
+  - `pnpm build --filter=@enbandeja/web`: OK.
 
 ## Pendiente
 
-- Revisar `git diff/status`.
-- Crear commit inicial.
-- Hacer push a `main` en `ChristianEducation/Enbandeja1`, si Christian lo autoriza.
+- Probar visualmente en navegador real los skeletons con red lenta.
+- Simular manualmente el path Webpay `stock_insufficient` con datos reales.
+- Verificar Manifest en Chrome DevTools/Application o Chrome movil.
 
 ## Estado real
 
-No terminado todavia: falta commit y push.
+Gate C terminado a nivel de codigo y build. Pendientes solo validaciones
+manuales dependientes de navegador/Webpay.
