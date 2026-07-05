@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // POST /api/menu/cerrar-dia — Cierre manual de la ventana del día
 // ═══════════════════════════════════════════════════════════════════
-// Solo OPERADOR. Cambia menú PUBLICADO → CERRADO para la fecha dada.
+// OPERADOR u OWNER. Cambia menú PUBLICADO → CERRADO para la fecha dada.
 // Esto bloquea nuevos pedidos para ese día (el middleware de creación
 // verifica que el menú esté PUBLICADO antes de permitir pedidos).
 // ═══════════════════════════════════════════════════════════════════
@@ -18,9 +18,9 @@ const CerrarDiaSchema = z.object({
 
 export const POST = withAuth(async (req: NextRequest, context: SessionContext) => {
   try {
-    if (context.role !== "OPERADOR") {
+    if (context.role !== "OPERADOR" && context.role !== "OWNER") {
       return NextResponse.json(
-        { success: false, error: "Solo el operador puede cerrar el día" },
+        { success: false, error: "Solo operador u owner pueden cerrar el día" },
         { status: 403 }
       )
     }
@@ -74,6 +74,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
     // Buscar menú PUBLICADO para esa fecha
     const menu = await db.menu.findFirst({
       where: {
+        tenantId: context.tenantId,
         colegioId: resolvedcolegioId,
         fecha: fechaDate,
         estado: "PUBLICADO",

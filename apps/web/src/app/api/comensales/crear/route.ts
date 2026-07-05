@@ -139,6 +139,7 @@ export async function POST(req: NextRequest) {
     if (!resolvedCategoriaPrecioId) {
       const defaultCategoria = await db.categoriaPrecio.findFirst({
         where: {
+          tenantId,
           colegioId,
           esDefault: true,
           isActive: true,

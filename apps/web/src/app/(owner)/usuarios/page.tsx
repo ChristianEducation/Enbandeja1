@@ -34,7 +34,7 @@ export default async function UsuariosPage() {
 
   // Usuarios del tenant
   const userTenants = await db.userTenant.findMany({
-    where: { deletedAt: null },
+    where: { tenantId: session.activeTenantId, deletedAt: null },
     include: {
       User: { select: { name: true, email: true, isActive: true } },
       Colegio: { select: { nombre: true } },
@@ -69,7 +69,7 @@ export default async function UsuariosPage() {
 
   // Colegios para selector en invitación
   const colegios = await db.colegio.findMany({
-    where: { isActive: true, deletedAt: null },
+    where: { tenantId: session.activeTenantId, isActive: true, deletedAt: null },
     select: { id: true, nombre: true },
   })
 

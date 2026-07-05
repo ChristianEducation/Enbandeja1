@@ -40,7 +40,7 @@ export default async function KioscoPage() {
 
   // Colegios del tenant
   const colegios = await db.colegio.findMany({
-    where: { isActive: true, deletedAt: null, kioscoActivo: true },
+    where: { tenantId, isActive: true, deletedAt: null, kioscoActivo: true },
     select: { id: true, nombre: true },
   })
 
@@ -52,7 +52,7 @@ export default async function KioscoPage() {
 
   if (primerColegio) {
     const categoriasRaw = await db.categoriaKiosco.findMany({
-      where: { colegioId: primerColegio.id, deletedAt: null },
+      where: { tenantId, colegioId: primerColegio.id, deletedAt: null },
       orderBy: { orden: "asc" },
     })
 
@@ -64,7 +64,7 @@ export default async function KioscoPage() {
     }))
 
     const productosRaw = await db.productoKiosco.findMany({
-      where: { colegioId: primerColegio.id, deletedAt: null },
+      where: { tenantId, colegioId: primerColegio.id, deletedAt: null },
       orderBy: { orden: "asc" },
     })
 

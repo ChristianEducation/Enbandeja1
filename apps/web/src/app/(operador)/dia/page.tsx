@@ -78,6 +78,7 @@ export default async function DiaPage() {
   // Query pedidos del día (PAGADO, CANCELADO, RETIRADO, NO_RETIRADO)
   const pedidosRaw = await db.pedido.findMany({
     where: {
+      tenantId,
       estado: { in: ["PAGADO", "CANCELADO", "RETIRADO", "NO_RETIRADO"] },
       Items: {
         some: {

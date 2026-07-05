@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // POST /api/menu/crear — Crear menú del día con opciones y precios
 // ═══════════════════════════════════════════════════════════════════
-// Solo OPERADOR. Transacción atómica: Menu + OpcionMenu + PrecioOpcion
+// OPERADOR u OWNER. Transacción atómica: Menu + OpcionMenu + PrecioOpcion
 // Validación: no permitir menú en fecha pasada si se publica
 // ═══════════════════════════════════════════════════════════════════
 import { NextRequest, NextResponse } from "next/server"
@@ -30,9 +30,9 @@ const CrearMenuSchema = z.object({
 
 export const POST = withAuth(async (req: NextRequest, context: SessionContext) => {
   try {
-    if (context.role !== "OPERADOR") {
+    if (context.role !== "OPERADOR" && context.role !== "OWNER") {
       return NextResponse.json(
-        { success: false, error: "Solo el operador puede crear menús" },
+        { success: false, error: "Solo operador u owner pueden crear menús" },
         { status: 403 }
       )
     }
@@ -66,7 +66,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
 
       // Validar que todas las categorías de precio del colegio tienen precio
       const categorias = await db.categoriaPrecio.findMany({
-        where: { colegioId, isActive: true, deletedAt: null },
+        where: { tenantId: context.tenantId, colegioId, isActive: true, deletedAt: null },
         select: { id: true },
       })
       const catIds = categorias.map((c: any) => c.id)
@@ -85,7 +85,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
     // Verificar que no existe menú para esa fecha + colegio
     const fechaDate = parseISO(fecha)
     const existente = await db.menu.findFirst({
-      where: { colegioId, fecha: fechaDate },
+      where: { tenantId: context.tenantId, colegioId, fecha: fechaDate },
     })
     if (existente) {
       return NextResponse.json(

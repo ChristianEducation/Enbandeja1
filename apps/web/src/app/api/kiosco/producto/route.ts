@@ -18,8 +18,8 @@ const ProductoSchema = z.object({
 
 // POST — crear producto
 export const POST = withAuth(async (req: NextRequest, context: SessionContext) => {
-  if (context.role !== "OPERADOR") {
-    return NextResponse.json({ success: false, error: "Solo el operador" }, { status: 403 })
+  if (context.role !== "OPERADOR" && context.role !== "OWNER") {
+    return NextResponse.json({ success: false, error: "Solo operador u owner" }, { status: 403 })
   }
 
   const body = await req.json()
@@ -32,7 +32,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
 
   // Obtener primer colegio con kiosco activo
   const colegio = await db.colegio.findFirst({
-    where: { kioscoActivo: true, isActive: true, deletedAt: null },
+    where: { tenantId: context.tenantId, kioscoActivo: true, isActive: true, deletedAt: null },
     select: { id: true },
   })
 
@@ -60,8 +60,8 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
 
 // PUT — actualizar producto
 export const PUT = withAuth(async (req: NextRequest, context: SessionContext) => {
-  if (context.role !== "OPERADOR") {
-    return NextResponse.json({ success: false, error: "Solo el operador" }, { status: 403 })
+  if (context.role !== "OPERADOR" && context.role !== "OWNER") {
+    return NextResponse.json({ success: false, error: "Solo operador u owner" }, { status: 403 })
   }
 
   const body = await req.json()

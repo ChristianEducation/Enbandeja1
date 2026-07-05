@@ -255,14 +255,32 @@ const existingPPC = await prisma.paymentProviderConfig.findFirst({
   where: { tenantId: demoTenant.id, provider: 'WEBPAY', isActive: true }
 })
 
+await prisma.paymentProviderConfig.updateMany({
+  where: {
+    tenantId: demoTenant.id,
+    provider: 'WEBPAY',
+    OR: [
+      { apiKeyEncrypted: { not: { startsWith: 'PLAIN:' } } },
+      { secretKeyEncrypted: { not: { startsWith: 'PLAIN:' } } },
+    ],
+  },
+  data: {
+    commerceCode: WEBPAY_SANDBOX_COMMERCE_CODE,
+    apiKeyEncrypted: `PLAIN:${WEBPAY_SANDBOX_API_KEY}`,
+    secretKeyEncrypted: `PLAIN:${WEBPAY_SANDBOX_SECRET_KEY}`,
+    environment: 'integration',
+    isDefault: true,
+  },
+})
+
 if (!existingPPC) {
   await prisma.paymentProviderConfig.create({
     data: {
       tenantId: demoTenant.id,
       provider: 'WEBPAY',
       commerceCode: WEBPAY_SANDBOX_COMMERCE_CODE,
-      apiKeyEncrypted: WEBPAY_SANDBOX_API_KEY,
-      secretKeyEncrypted: WEBPAY_SANDBOX_SECRET_KEY,
+      apiKeyEncrypted: `PLAIN:${WEBPAY_SANDBOX_API_KEY}`,
+      secretKeyEncrypted: `PLAIN:${WEBPAY_SANDBOX_SECRET_KEY}`,
       environment: 'integration',
       isActive: true,
       isDefault: true,

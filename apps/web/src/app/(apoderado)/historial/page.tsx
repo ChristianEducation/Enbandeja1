@@ -66,7 +66,7 @@ export default async function HistorialPage() {
 
   // Query pedidos del apoderado
   const pedidos = await db.pedido.findMany({
-    where: { apoderadoId: userId },
+    where: { tenantId, apoderadoId: userId },
     include: {
       Items: {
         include: {
@@ -144,7 +144,7 @@ export default async function HistorialPage() {
 
   // Query comensales del apoderado para filtro
   const comensales = await db.comensal.findMany({
-    where: { apoderadoId: userId, deletedAt: null },
+    where: { tenantId, apoderadoId: userId, deletedAt: null },
     select: { id: true, nombre: true, apellido: true, curso: true },
   })
 

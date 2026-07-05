@@ -42,6 +42,7 @@ export default async function ConfirmacionPage({ searchParams }: ConfirmacionPag
   // Buscar pedido por orderId (no por UUID directo)
   const pedido = await db.pedido.findFirst({
     where: {
+      tenantId,
       orderId: pedidoId,
       apoderadoId: userId,
     },

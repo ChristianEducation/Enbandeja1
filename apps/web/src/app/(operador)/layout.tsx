@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // Layout del operador — Server Component
 // ═══════════════════════════════════════════════════════════════════
-// Valida sesión + rol OPERADOR en el tenant activo
+// Valida sesión + rol OPERADOR/OWNER en el tenant activo
 // Sidebar lateral en desktop, bottom-nav en mobile
 // Tablet-first (el operador usa tablet)
 // ═══════════════════════════════════════════════════════════════════
@@ -19,12 +19,12 @@ export default async function OperadorLayout({
   if (!session?.user?.id) redirect("/login")
   if (!session.activeTenantId) redirect("/onboarding/codigo")
 
-  // Verificar rol OPERADOR en el tenant activo
+  // Verificar rol OPERADOR u OWNER en el tenant activo
   const userTenant = await prisma.userTenant.findFirst({
     where: {
       userId: session.user.id,
       tenantId: session.activeTenantId,
-      role: "OPERADOR",
+      role: { in: ["OPERADOR", "OWNER"] },
       isActive: true,
       deletedAt: null,
     },
@@ -43,6 +43,7 @@ export default async function OperadorLayout({
     })
     if (anyTenant?.role === "APODERADO") redirect("/home")
     if (anyTenant?.role === "COCINA") redirect("/cocina")
+    if (anyTenant?.role === "OWNER") redirect("/operador/menu")
     redirect("/login")
   }
 

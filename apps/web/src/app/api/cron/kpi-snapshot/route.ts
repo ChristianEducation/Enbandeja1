@@ -21,8 +21,12 @@ import { generarKpiSnapshot } from "@/lib/kpi/generar-snapshot"
 
 export async function GET(req: NextRequest) {
   // Verificar CRON_SECRET
-  const authHeader = req.headers.get("authorization")
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret) {
+    return NextResponse.json({ error: "CRON_SECRET no configurado" }, { status: 500 })
+  }
+
+  if (req.headers.get("authorization") !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 

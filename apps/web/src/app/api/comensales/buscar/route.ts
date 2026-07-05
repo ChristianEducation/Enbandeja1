@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@enbandeja/database'
 import { z } from 'zod'
+import { auth } from '@/lib/auth'
 
 // ═══════════════════════════════════════════════════════════════════
 // GET /api/comensales/buscar
@@ -8,8 +9,8 @@ import { z } from 'zod'
 // Busca comensales precargados (apoderadoId IS NULL) en un colegio
 // y curso determinado.
 //
-// NOTA: Es público porque el apoderado en onboarding no tiene
-// un activeTenantId aún.
+// NOTA: autenticado sin tenant porque el apoderado en onboarding
+// no tiene un activeTenantId aún.
 // ═══════════════════════════════════════════════════════════════════
 
 const buscarSchema = z.object({
@@ -21,6 +22,11 @@ const buscarSchema = z.object({
 
 export async function GET(req: NextRequest) {
   try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+    }
+
     const { searchParams } = new URL(req.url)
     const tenantId = searchParams.get('tenantId') ?? ''
     const colegioId = searchParams.get('colegioId') ?? ''

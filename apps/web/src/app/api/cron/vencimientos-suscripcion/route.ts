@@ -49,8 +49,12 @@ async function crearNotificacionBilling(
 }
 
 export const POST = async (req: Request) => {
-  const auth = req.headers.get('authorization')
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret) {
+    return NextResponse.json({ error: 'CRON_SECRET no configurado' }, { status: 500 })
+  }
+
+  if (req.headers.get('authorization') !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 

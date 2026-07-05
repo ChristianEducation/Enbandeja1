@@ -15,7 +15,7 @@ export default async function ColegiosPage() {
   const db = createTenantClient(session.activeTenantId, session.user.id)
 
   const colegios = await db.colegio.findMany({
-    where: { deletedAt: null },
+    where: { tenantId: session.activeTenantId, deletedAt: null },
     select: {
       id: true,
       nombre: true,

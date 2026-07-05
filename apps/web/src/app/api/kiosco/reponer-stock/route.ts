@@ -12,8 +12,8 @@ const ReponerStockSchema = z.object({
 })
 
 export const POST = withAuth(async (req: NextRequest, context: SessionContext) => {
-  if (context.role !== "OPERADOR") {
-    return NextResponse.json({ success: false, error: "Solo el operador" }, { status: 403 })
+  if (context.role !== "OPERADOR" && context.role !== "OWNER") {
+    return NextResponse.json({ success: false, error: "Solo operador u owner" }, { status: 403 })
   }
 
   const body = await req.json()

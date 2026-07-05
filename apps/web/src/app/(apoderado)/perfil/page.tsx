@@ -43,7 +43,7 @@ export default async function PerfilPage() {
 
   // Comensales del apoderado
   const comensalesRaw = await db.comensal.findMany({
-    where: { apoderadoId: userId, deletedAt: null },
+    where: { tenantId, apoderadoId: userId, deletedAt: null },
     select: {
       id: true,
       nombre: true,
@@ -56,7 +56,7 @@ export default async function PerfilPage() {
 
   // Crédito del apoderado
   const credito = await db.creditoApoderado.findFirst({
-    where: { apoderadoId: userId },
+    where: { tenantId, apoderadoId: userId },
     select: { monto: true },
   })
 

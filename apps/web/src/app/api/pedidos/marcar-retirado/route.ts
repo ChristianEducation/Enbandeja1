@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════
 // POST /api/pedidos/marcar-retirado — Marcar pedido como retirado
 // ═══════════════════════════════════════════════════════════════════
-// Solo OPERADOR puede marcar retiros.
+// OPERADOR u OWNER pueden marcar retiros.
 // Valida que el pedido pertenece al tenant.
 // Transición: PAGADO/NO_RETIRADO → RETIRADO
 // Marca todos los items como retirado=true.
@@ -18,10 +18,10 @@ const MarcarRetiradoSchema = z.object({
 
 export const POST = withAuth(async (req: NextRequest, context: SessionContext) => {
   try {
-    // Validar rol OPERADOR
-    if (context.role !== "OPERADOR") {
+    // Validar rol OPERADOR u OWNER
+    if (context.role !== "OPERADOR" && context.role !== "OWNER") {
       return NextResponse.json(
-        { success: false, error: "Solo el operador puede marcar retiros" },
+        { success: false, error: "Solo operador u owner pueden marcar retiros" },
         { status: 403 }
       )
     }
