@@ -27,7 +27,7 @@ export default async function NuevoMenuPage({
 
   // Colegios del tenant
   const colegios = await db.colegio.findMany({
-    where: { isActive: true, deletedAt: null },
+    where: { tenantId, isActive: true, deletedAt: null },
     select: { id: true, nombre: true },
   })
 
@@ -35,7 +35,7 @@ export default async function NuevoMenuPage({
   const primerColegio = colegios[0]
   const categorias = primerColegio
     ? await db.categoriaPrecio.findMany({
-        where: { colegioId: primerColegio.id, isActive: true, deletedAt: null },
+        where: { tenantId, colegioId: primerColegio.id, isActive: true, deletedAt: null },
         select: { id: true, nombre: true, esDefault: true },
         orderBy: { orden: "asc" },
       })

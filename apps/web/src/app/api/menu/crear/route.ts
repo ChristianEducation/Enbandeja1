@@ -66,7 +66,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
 
       // Validar que todas las categorías de precio del colegio tienen precio
       const categorias = await db.categoriaPrecio.findMany({
-        where: { colegioId, isActive: true, deletedAt: null },
+        where: { tenantId: context.tenantId, colegioId, isActive: true, deletedAt: null },
         select: { id: true },
       })
       const catIds = categorias.map((c: any) => c.id)
@@ -85,7 +85,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
     // Verificar que no existe menú para esa fecha + colegio
     const fechaDate = parseISO(fecha)
     const existente = await db.menu.findFirst({
-      where: { colegioId, fecha: fechaDate },
+      where: { tenantId: context.tenantId, colegioId, fecha: fechaDate },
     })
     if (existente) {
       return NextResponse.json(

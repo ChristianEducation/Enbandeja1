@@ -43,6 +43,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
     const comensalIds = [...new Set(items.map((i) => i.comensalId))]
     const comensalesValidos = await db.comensal.findMany({
       where: {
+        tenantId: context.tenantId,
         id: { in: comensalIds },
         apoderadoId: context.userId,
         isActive: true,

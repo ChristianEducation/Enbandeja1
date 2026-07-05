@@ -44,6 +44,7 @@ export default async function MenuPage() {
   // Query menús del mes actual y siguiente
   const menusRaw = await db.menu.findMany({
     where: {
+      tenantId,
       fecha: {
         gte: inicioMes,
         lte: finMesSiguiente,
@@ -64,7 +65,7 @@ export default async function MenuPage() {
 
   // Colegios del tenant para selector
   const colegios = await db.colegio.findMany({
-    where: { isActive: true, deletedAt: null },
+    where: { tenantId, isActive: true, deletedAt: null },
     select: { id: true, nombre: true },
   })
 

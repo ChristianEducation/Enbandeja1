@@ -57,6 +57,7 @@ export default async function CocinaPage() {
   // Query pedidos del día
   const pedidosRaw = await db.pedido.findMany({
     where: {
+      tenantId,
       estado: { in: ["PAGADO", "RETIRADO", "NO_RETIRADO"] },
       Items: {
         some: {

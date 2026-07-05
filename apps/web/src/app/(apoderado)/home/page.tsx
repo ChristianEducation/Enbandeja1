@@ -90,6 +90,7 @@ export default async function HomePage() {
   // 3. Query comensales del apoderado con colegio
   const comensalesRaw = await db.comensal.findMany({
     where: {
+      tenantId,
       apoderadoId: userId,
       isActive: true,
       deletedAt: null,
@@ -145,6 +146,7 @@ export default async function HomePage() {
   // 6. Query menús publicados
   const menus = await db.menu.findMany({
     where: {
+      tenantId,
       colegioId: { in: colegioIds },
       fecha: { in: fechas.map((f) => new Date(f)) },
       estado: "PUBLICADO",
@@ -164,6 +166,7 @@ export default async function HomePage() {
   // 7. Query pedidos existentes
   const pedidos = await db.pedido.findMany({
     where: {
+      tenantId,
       apoderadoId: userId,
       estado: { in: ["PENDIENTE_PAGO", "PAGADO"] },
       deletedAt: null,

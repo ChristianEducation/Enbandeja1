@@ -28,7 +28,7 @@ export default async function EditarMenuPage({
   // Buscar menú por fecha
   const fechaDate = parseISO(fecha)
   const menu = await db.menu.findFirst({
-    where: { fecha: fechaDate },
+    where: { tenantId, fecha: fechaDate },
     include: {
       Opciones: {
         include: {
@@ -54,7 +54,7 @@ export default async function EditarMenuPage({
 
   // Categorías de precio del colegio
   const categorias = await db.categoriaPrecio.findMany({
-    where: { colegioId: menu.colegioId, isActive: true, deletedAt: null },
+    where: { tenantId, colegioId: menu.colegioId, isActive: true, deletedAt: null },
     select: { id: true, nombre: true, esDefault: true },
     orderBy: { orden: "asc" },
   })

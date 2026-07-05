@@ -14,24 +14,23 @@
 // - PUBLICADO→CERRADO solo si estado === PUBLICADO (ya cerrados se saltan)
 // - CERRADO→ARCHIVADO solo si estado === CERRADO (ya archivados se saltan)
 //
-// Protección: espera header CRON_SECRET o param ?secret= para ejecutar.
+// Protección: espera header CRON_SECRET para ejecutar.
 // ═══════════════════════════════════════════════════════════════════
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@enbandeja/database"
 import { toZonedTime } from "date-fns-tz"
 import { format, parseISO } from "date-fns"
 
-const CRON_SECRET = process.env.CRON_SECRET || ""
-
 export const dynamic = "force-dynamic"
 
 export async function GET(req: NextRequest) {
   // Protección: verificar CRON_SECRET
-  const authHeader = req.headers.get("authorization")
-  const paramSecret = req.nextUrl.searchParams.get("secret")
-  const providedSecret = authHeader?.replace("Bearer ", "") || paramSecret || ""
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret) {
+    return NextResponse.json({ error: "CRON_SECRET no configurado" }, { status: 500 })
+  }
 
-  if (CRON_SECRET && providedSecret !== CRON_SECRET) {
+  if (req.headers.get("authorization") !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ success: false, error: "No autorizado" }, { status: 401 })
   }
 

@@ -32,7 +32,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
 
   // Obtener primer colegio con kiosco activo
   const colegio = await db.colegio.findFirst({
-    where: { kioscoActivo: true, isActive: true, deletedAt: null },
+    where: { tenantId: context.tenantId, kioscoActivo: true, isActive: true, deletedAt: null },
     select: { id: true },
   })
 

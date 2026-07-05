@@ -33,6 +33,7 @@ export const GET = withAuth(async (req: NextRequest, context: SessionContext) =>
   // Query pedidos del día
   const pedidos = await db.pedido.findMany({
     where: {
+      tenantId: context.tenantId,
       estado: { in: ["PAGADO", "RETIRADO", "NO_RETIRADO"] },
       Items: {
         some: {

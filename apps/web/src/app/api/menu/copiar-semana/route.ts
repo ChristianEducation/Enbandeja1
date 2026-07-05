@@ -25,6 +25,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
     // Buscar la semana más reciente con menús PUBLICADOS o BORRADOR
     const menusRecientes = await db.menu.findMany({
       where: {
+        tenantId: context.tenantId,
         estado: { in: ["PUBLICADO", "BORRADOR"] },
       },
       include: {

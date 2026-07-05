@@ -74,6 +74,7 @@ export const POST = withAuth(async (req: NextRequest, context: SessionContext) =
     // Buscar menú PUBLICADO para esa fecha
     const menu = await db.menu.findFirst({
       where: {
+        tenantId: context.tenantId,
         colegioId: resolvedcolegioId,
         fecha: fechaDate,
         estado: "PUBLICADO",

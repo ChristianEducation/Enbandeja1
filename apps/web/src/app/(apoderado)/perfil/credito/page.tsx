@@ -44,13 +44,13 @@ export default async function CreditoPage() {
 
   // Crédito del apoderado
   const credito = await db.creditoApoderado.findFirst({
-    where: { apoderadoId: userId },
+    where: { tenantId, apoderadoId: userId },
     select: { monto: true },
   })
 
   // Movimientos ordenados desc
   const creditoRecord = await db.creditoApoderado.findFirst({
-    where: { apoderadoId: userId },
+    where: { tenantId, apoderadoId: userId },
     select: { id: true },
   })
 
@@ -58,7 +58,7 @@ export default async function CreditoPage() {
 
   if (creditoRecord) {
     const movimientosRaw = await db.creditoMovimiento.findMany({
-      where: { creditoId: creditoRecord.id },
+      where: { tenantId, creditoId: creditoRecord.id },
       orderBy: { createdAt: "desc" },
     })
 
