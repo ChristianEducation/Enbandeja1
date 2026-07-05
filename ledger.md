@@ -8,6 +8,30 @@
 
 ---
 
+## 2026-07-05 — Sprint pre-demo completado T01-T12
+
+- Gate A completado: seed Webpay demo usa `PLAIN:`, OWNER puede operar
+  flujo de operador, APIs operativas aceptan OWNER y `.env.example`
+  quedó alineado con las variables reales.
+- Gate B completado: `/api/comensales/buscar` exige sesión, los 4 crons
+  fallan cerrado sin `CRON_SECRET`, y las queries tenant-aware revisadas
+  filtran explícitamente por `tenantId`.
+- Gate C completado: creadas `/pago-error` y `/pago-rechazado`, skeletons
+  para rutas clave de demo, favicon/manifest/icons PWA y traza de
+  devolución manual en Webpay cuando falta stock post-commit.
+- Gate D completado: agregado `packages/database/prisma/seed-demo-menu.ts`
+  y script `db:seed:demo`; genera 5 menús publicados de lunes a viernes
+  de la próxima semana con 12 opciones chilenas y precios demo.
+- Verificación ejecutada: `pnpm type-check`, `pnpm lint`,
+  `pnpm build --filter=@enbandeja/web`, `db:seed:demo` dos veces,
+  y verificación directa en DB de 5 menús publicados + 12 precios.
+- `pnpm test:e2e:critical` fue intentado con `PORT=3000`; el runner
+  arranca, pero queda pendiente manual porque falta instalar Chromium
+  de Playwright en el entorno (`pnpm exec playwright install`).
+- Pendiente humano antes de demo: rotar password Supabase expuesta en
+  chat, probar visualmente skeletons/PWA, validar flujo Webpay real y
+  ensayar guión comercial.
+
 ## 2026-06-23 — Refresh visual light-first implementado localmente
 
 - Plan Maestro actualizado a v2 light-first.
