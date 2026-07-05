@@ -223,6 +223,22 @@ async function procesarConfirmacion(
           data: { processed: true, processedAt: new Date() },
         })
 
+        await tx.auditLog.create({
+          data: {
+            tenantId,
+            userId: pedido.apoderadoId,
+            action: "DEVOLUCION_MANUAL_REQUERIDA",
+            entityType: "Pedido",
+            entityId: pedido.id,
+            changes: {
+              orderId,
+              montoADevolver: pedido.totalPagado,
+              motivo: "stock_insuficiente_post_commit",
+              token_ws,
+            },
+          },
+        })
+
         return { status: "stock_insufficient" }
       }
 
@@ -296,6 +312,16 @@ async function procesarConfirmacion(
     }
 
     if (result.status === "stock_insufficient") {
+      crearNotificacion(
+        tenantId,
+        pedido.apoderadoId,
+        "DEVOLUCION_PENDIENTE",
+        "Pago en proceso de devolución",
+        `El pedido ${orderId} no pudo completarse por stock insuficiente. Registramos la devolución manual para revisión.`,
+        "PUSH",
+        { ruta: "/historial" }
+      ).catch(() => {})
+
       return NextResponse.redirect(
         `${APP_URL}/pago-error?motivo=stock_insuficiente&pedidoId=${orderId}`
       )
